@@ -49,7 +49,9 @@ namespace EFCodeFirstPostgreSQL.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-
+            var category = _context.Categories.Where(x => x.Id == id).Include(x=>x.Products).FirstOrDefault();
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
         }
     }
 }
