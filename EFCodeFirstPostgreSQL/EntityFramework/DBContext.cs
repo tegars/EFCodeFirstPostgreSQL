@@ -1,5 +1,6 @@
 ﻿using EFCodeFirstPostgreSQL.EntityFramework.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,18 @@ namespace EFCodeFirstPostgreSQL.EntityFramework
 {
     public class DBContext : DbContext
     {
-        public DbSet<Category> Categories { set; get; }
-        public DbSet<Product> Products { set; get; }
+        private IConfiguration _configuration;
+        public DBContext(DbContextOptions<DBContext> options, IConfiguration configuration) : base(options)
+        {
+            _configuration = configuration;
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(@"server=localhost;database=FirstEF;Port=5432;User Id=postgres;Password=fads;");
+            optionsBuilder.UseNpgsql(_configuration.GetConnectionString("DefaultConnection"));
         }
+
+        public DbSet<Category> Categories { set; get; }
+        public DbSet<Product> Products { set; get; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
