@@ -23,7 +23,14 @@ namespace EFCodeFirstPostgreSQL.Controllers
         [HttpGet]
         public ActionResult<List<Category>> Get()
         {
-            var categories = _context.Categories.Include(x=>x.Products).ToList();
+            List<Category> categories = _context.Categories
+                .Include(x => x.Products)
+                .Select(x => new Category
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Products = x.Products
+                }).ToList();
             return Ok(categories);
         }
         [HttpGet("{id}")]
